@@ -1006,15 +1006,15 @@ footer{
           </div>
           <div id="success-wrap" class="success-state" role="alert" aria-live="polite">
             <div class="success-ico"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <h3>Message received</h3>
-            <p>Thank you. A member of our team will contact you within 24 hours.</p>
+            <h3>Opening WhatsApp</h3>
+            <p>Your message has been prepared and WhatsApp is opening in a new tab. A member of our team will respond within 24 hours.</p>
             <button type="button" class="reset-btn" id="reset-btn">Send another message</button>
           </div>
           <div id="form-btns">
             <button type="submit" class="submit-btn">
               <span class="btn-txt">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                Submit inquiry
+                Send via WhatsApp
               </span>
               <span class="ld" aria-hidden="true"></span>
             </button>
@@ -1263,34 +1263,73 @@ document.querySelectorAll('.svc-card,.info-card,.mission-visual').forEach(card=>
   card.addEventListener('mouseleave',()=>{card.style.transform='';});
 });
 
-/* ── FORM SUBMIT ── */
+/* ── FORM SUBMIT → WHATSAPP ── */
 (function(){
-  const form=document.getElementById('cform');
-  const btn=form.querySelector('.submit-btn');
-  const succ=document.getElementById('success-wrap');
-  const fbtns=document.getElementById('form-btns');
-  const reset=document.getElementById('reset-btn');
-  const emailRx=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  form.addEventListener('submit',e=>{
+  /* ★ Replace with your WhatsApp number (international format, no + or spaces) */
+  var WA_NUMBER = '923006006263'; /* Ali Awan — taxsystemonline@gmail.com */
+
+  var form  = document.getElementById('cform');
+  var btn   = form.querySelector('.submit-btn');
+  var succ  = document.getElementById('success-wrap');
+  var fbtns = document.getElementById('form-btns');
+  var reset = document.getElementById('reset-btn');
+  var emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const n=form.full_name.value.trim(),em=form.email.value.trim(),
-          s=form.subject.value,m=form.message.value.trim();
-    if(!n||!em||!s||!m){gsap.fromTo(form,{x:-7},{x:0,duration:.38,ease:'elastic.out(2,.4)',clearProps:'x'});return;}
-    if(!emailRx.test(em)){gsap.fromTo(form.email,{x:-6},{x:0,duration:.34,ease:'elastic.out(2,.4)',clearProps:'x'});return;}
-    btn.classList.add('loading');btn.disabled=true;
-    setTimeout(()=>{
+
+    var name    = form.full_name.value.trim();
+    var email   = form.email.value.trim();
+    var phone   = form.phone.value.trim();
+    var subject = form.subject.value;
+    var message = form.message.value.trim();
+
+    /* Validation */
+    if (!name || !email || !subject || !message) {
+      gsap.fromTo(form, {x:-7}, {x:0, duration:.38, ease:'elastic.out(2,.4)', clearProps:'x'});
+      return;
+    }
+    if (!emailRx.test(email)) {
+      gsap.fromTo(form.email, {x:-6}, {x:0, duration:.34, ease:'elastic.out(2,.4)', clearProps:'x'});
+      return;
+    }
+
+    /* Build pre-filled WhatsApp message */
+    var subjectLabel = form.subject.options[form.subject.selectedIndex].text;
+    var waText =
+      '👋 *New Inquiry — Ali Awan Law Associates*\n\n' +
+      '*Name:* ' + name + '\n' +
+      '*Email:* ' + email + '\n' +
+      (phone ? '*Phone:* ' + phone + '\n' : '') +
+      '*Service Area:* ' + subjectLabel + '\n\n' +
+      '*Message:*\n' + message;
+
+    var waURL = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(waText);
+
+    /* Loading animation */
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    /* Short delay so the user sees the spinner, then redirect */
+    setTimeout(function() {
       btn.classList.remove('loading');
-      form.querySelectorAll('.fg,.frow,.form-disc').forEach(el=>el.style.display='none');
-      fbtns.style.display='none';
+
+      /* Show success card */
+      form.querySelectorAll('.fg,.frow,.form-disc').forEach(function(el){ el.style.display='none'; });
+      fbtns.style.display = 'none';
       succ.classList.add('show');
-    },1800);
+
+      /* Open WhatsApp in new tab */
+      window.open(waURL, '_blank', 'noopener,noreferrer');
+    }, 900);
   });
-  reset.addEventListener('click',()=>{
+
+  reset.addEventListener('click', function() {
     succ.classList.remove('show');
     form.reset();
-    form.querySelectorAll('.fg,.frow,.form-disc').forEach(el=>el.style.display='');
-    fbtns.style.display='';
-    btn.disabled=false;
+    form.querySelectorAll('.fg,.frow,.form-disc').forEach(function(el){ el.style.display=''; });
+    fbtns.style.display = '';
+    btn.disabled = false;
     document.getElementById('subj-fg').classList.remove('sel-filled');
   });
 })();
