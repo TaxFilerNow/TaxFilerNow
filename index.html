@@ -26,7 +26,7 @@
             --text-muted: #64748b;
             --text-light: #f1f5f9;
             --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-            --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
             --max-width: 1240px;
             --border-radius: 6px;
         }
@@ -66,6 +66,105 @@
             list-style: none;
         }
 
+        /* ════ CUSTOM FLUID CURSOR ════ */
+        #custom-cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        #custom-cursor-ring {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(16, 108, 171, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+        }
+        
+        /* Cursor Interactive States */
+        body.cursor-hover #custom-cursor-dot {
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary-dark);
+        }
+        body.cursor-hover #custom-cursor-ring {
+            width: 48px;
+            height: 48px;
+            border-color: var(--primary);
+            background-color: rgba(16, 108, 171, 0.05);
+        }
+        body.cursor-active #custom-cursor-ring {
+            width: 24px;
+            height: 24px;
+            background-color: rgba(16, 108, 171, 0.2);
+        }
+
+        /* Disable custom cursor on touch screens */
+        @media (pointer: coarse) {
+            #custom-cursor-dot, #custom-cursor-ring { display: none !important; }
+            body { cursor: auto !important; }
+            a, button, select, input, textarea { cursor: pointer !important; }
+        }
+        @media (pointer: fine) {
+            body, a, button, select, input, textarea { cursor: none; }
+        }
+
+        /* ════ HIGHLIGHTED ANNOUNCEMENT BAR ════ */
+        .announcement-bar {
+            background-color: var(--surface-dark);
+            color: var(--surface-white);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 10px 24px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1002;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .announcement-bar span strong {
+            color: #4caef5;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-announcement {
+            background-color: var(--primary);
+            color: var(--surface-white);
+            padding: 4px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 4px;
+            animation: pulse-glow 2s infinite ease-in-out;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-announcement:hover {
+            background-color: var(--surface-white);
+            color: var(--surface-dark);
+        }
+
         /* ════ LAYOUT UTILITIES ════ */
         .container {
             width: 100%;
@@ -75,7 +174,7 @@
         }
 
         .section-padding {
-            padding: 100px 0;
+            padding: 120px 0;
         }
 
         .section-dark {
@@ -130,9 +229,8 @@
             font-weight: 600;
             border-radius: var(--border-radius);
             transition: var(--transition-smooth);
-            cursor: pointer;
-            border: none;
             gap: 8px;
+            border: none;
         }
 
         .btn-primary {
@@ -142,7 +240,8 @@
 
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            box-shadow: 0 4px 12px rgba(16, 108, 171, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 108, 171, 0.3);
         }
 
         .btn-outline {
@@ -154,29 +253,20 @@
         .btn-outline:hover {
             background-color: var(--primary);
             color: var(--surface-white);
-        }
-
-        .btn-light-outline {
-            background-color: transparent;
-            border: 2px solid var(--surface-white);
-            color: var(--surface-white);
-        }
-
-        .btn-light-outline:hover {
-            background-color: var(--surface-white);
-            color: var(--surface-dark);
+            transform: translateY(-2px);
         }
 
         /* ════ HEADER & NAVIGATION ════ */
         header {
             position: fixed;
-            top: 0;
+            top: 41px; /* Offset for internal announcement bar space */
             left: 0;
             width: 100%;
             background-color: rgba(255, 255, 255, 0.96);
             border-bottom: 1px solid #e2e8f0;
-            z-index: 1000;
+            z-index: 1001;
             backdrop-filter: blur(8px);
+            transition: top 0.3s ease;
         }
 
         .nav-container {
@@ -215,8 +305,23 @@
             padding: 8px 0;
         }
 
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition-smooth);
+        }
+
         .nav-link:hover {
             color: var(--primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
         }
 
         .nav-cta {
@@ -231,7 +336,6 @@
             gap: 6px;
             background: none;
             border: none;
-            cursor: pointer;
             padding: 4px;
         }
 
@@ -240,15 +344,27 @@
             width: 24px;
             height: 2px;
             background-color: var(--text-dark);
-            transition: var(--transition-smooth);
         }
 
         /* ════ HERO SECTION ════ */
         #hero {
-            padding-top: 180px;
-            padding-bottom: 100px;
+            padding-top: 240px;
+            padding-bottom: 120px;
             background: linear-gradient(135deg, #f8fafc 0%, #edf4f9 100%);
             position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle animated mesh elements in background */
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(16, 108, 171, 0.08) 0%, transparent 70%);
+            animation: floating-bg 8s infinite alternate ease-in-out;
         }
 
         .hero-layout {
@@ -259,12 +375,13 @@
         }
 
         .hero-tagline {
-            font-size: clamp(38px, 6vw, 56px);
+            font-size: clamp(38px, 5.5vw, 54px);
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1.15;
             color: var(--surface-dark);
             letter-spacing: -0.03em;
             margin-bottom: 24px;
+            animation: fade-in-up 0.8s ease-out;
         }
 
         .hero-tagline span {
@@ -276,20 +393,24 @@
             color: var(--text-muted);
             margin-bottom: 36px;
             line-height: 1.6;
+            animation: fade-in-up 1s ease-out;
         }
 
         .hero-actions {
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
+            animation: fade-in-up 1.2s ease-out;
         }
 
         .hero-badge-card {
             background-color: var(--surface-white);
             border: 1px solid #e2e8f0;
             border-radius: var(--border-radius);
-            padding: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            animation: fade-in-right 1s ease-out;
+            position: relative;
         }
 
         .hero-badge-card h3 {
@@ -349,6 +470,8 @@
             border-color: var(--primary);
             color: var(--primary);
             background-color: var(--surface-white);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
 
         /* ════ ABOUT US ════ */
@@ -405,8 +528,8 @@
         }
 
         .vmv-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(16, 108, 171, 0.08);
             border-color: var(--primary);
         }
 
@@ -414,6 +537,12 @@
             font-size: 32px;
             color: var(--primary);
             margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .vmv-card:hover .vmv-icon {
+            transform: rotateY(180deg);
         }
 
         .vmv-card h3 {
@@ -445,7 +574,8 @@
         }
 
         .service-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(16, 108, 171, 0.06);
             border-color: var(--primary);
         }
 
@@ -465,6 +595,11 @@
             height: 8px;
             background-color: var(--primary);
             border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-title::before {
+            transform: scale(1.6);
         }
 
         .service-desc {
@@ -487,6 +622,12 @@
             border-radius: 4px;
             color: var(--text-dark);
             font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .service-card:hover .service-tag {
+            background-color: var(--primary-light);
+            color: var(--primary);
         }
 
         /* ════ INDUSTRIES ════ */
@@ -509,7 +650,7 @@
             background-color: var(--primary);
             border-color: var(--primary);
             color: var(--surface-white);
-            transform: translateY(-2px);
+            transform: scale(1.03);
         }
 
         .industry-name {
@@ -537,6 +678,12 @@
             padding: 24px;
             border-radius: var(--border-radius);
             border: 1px solid #e2e8f0;
+            transition: var(--transition-smooth);
+        }
+
+        .process-step:hover {
+            border-color: var(--primary);
+            transform: translateX(6px);
         }
 
         .step-num {
@@ -551,6 +698,11 @@
             font-weight: 700;
             font-size: 14px;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover .step-num {
+            transform: scale(1.1);
         }
 
         .step-content h4 {
@@ -578,6 +730,12 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            transition: var(--transition-smooth);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.05);
         }
 
         .blog-meta {
@@ -614,6 +772,11 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            transition: gap 0.2s ease;
+        }
+
+        .blog-card:hover .blog-link {
+            gap: 8px;
         }
 
         /* ════ CONTACT US SECTION ════ */
@@ -769,6 +932,28 @@
             gap: 24px;
         }
 
+        /* ════ GRAPHIC & INTERACTION ANIMATIONS ════ */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 108, 171, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 108, 171, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 108, 171, 0); }
+        }
+
+        @keyframes floating-bg {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 20px) scale(1.15); }
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fade-in-right {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         /* ════ RESPONSIVE BREAKPOINTS ════ */
         @media (max-width: 1024px) {
             .services-grid, .vmv-grid, .blog-grid {
@@ -790,11 +975,19 @@
         }
 
         @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
+            .announcement-bar {
+                flex-direction: column;
+                gap: 8px;
+                font-size: 12px;
+            }
+            header {
+                top: 65px; /* Adjusting navigation offset for packed mobile announcement */
+            }
+            #hero {
+                padding-top: 220px;
             }
             .nav-menu {
-                display: none; /* Hidden for pure HTML/CSS structural baseline */
+                display: none;
             }
             .services-grid, .vmv-grid, .blog-grid, .industries-grid {
                 grid-template-columns: 1fr;
@@ -816,6 +1009,16 @@
     </style>
 </head>
 <body>
+
+    <!-- ══ DUAL COMPONENT DYNAMIC CURSOR ══ -->
+    <div id="custom-cursor-dot"></div>
+    <div id="custom-cursor-ring"></div>
+
+    <!-- ══ HIGHLIGHTED ANNOUNCEMENT BAR ══ -->
+    <div class="announcement-bar">
+        <span>Contact Us: <strong>+923326006263</strong></span>
+        <a href="#contact" class="btn-announcement">Get Filer Now</a>
+    </div>
 
     <!-- ══ HEADER & NAVIGATION ══ -->
     <header id="header">
@@ -846,7 +1049,7 @@
         <section id="hero">
             <div class="container hero-layout">
                 <div>
-                    <h1 class="hero-tagline">Simplifying Tax.<br><span>Empowering Growth.</span></h1>
+                    <h1 class="hero-tagline">Simplifying Taxes<br><span>Through Strategic Solutions.</span></h1>
                     <p class="hero-description">Preeminent tax lawyers and corporate advisors providing sophisticated solutions for complex financial landscapes. From standard regulatory compliance to aggressive High Court and Supreme Court advocacy.</p>
                     <div class="hero-actions">
                         <a href="#contact" class="btn btn-primary">Speak with a Tax Expert</a>
@@ -855,7 +1058,7 @@
                 </div>
                 <div class="hero-badge-card">
                     <h3>Appellate Excellence</h3>
-                    <p>Offering clear strategic council for individuals, enterprise structures, and multinational operations across standard tax filing frameworks or active constitutional disputes.</p>
+                    <p>Offering clear strategic counsel for individuals, enterprise structures, and multinational operations across standard tax filing frameworks or active constitutional disputes.</p>
                 </div>
             </div>
         </section>
@@ -901,7 +1104,7 @@
                 <div class="vmv-card">
                     <div class="vmv-icon">👁</div>
                     <h3>Our Vision</h3>
-                    <p>To redefine legal excellence within tax environments, constructing an unambiguous, Frictionless framework for growth and regulatory compliance across all operating tiers.</p>
+                    <p>To redefine legal excellence within tax environments, constructing an unambiguous, frictionless framework for growth and regulatory compliance across all operating tiers.</p>
                 </div>
                 <div class="vmv-card">
                     <div class="vmv-icon">🎯</div>
@@ -1068,42 +1271,6 @@
             </div>
         </section>
 
-        <!-- ══ BLOG SECTION ══ -->
-        <section id="blog" class="section-padding">
-            <div class="container">
-                <span class="eyebrow">Corporate Insights</span>
-                <h2 class="section-title">Critical Intelligence Updates</h2>
-                <p class="section-desc">Practical legal analysis covering the fluid statutory developments shaping macro business environments.</p>
-                
-                <div class="blog-grid">
-                    <article class="blog-card">
-                        <div class="blog-content">
-                            <div class="blog-meta">July 2026 · Corporate Tax Law</div>
-                            <h3 class="blog-title"><a href="#">Managing Cross-Border Audits</a></h3>
-                            <p class="blog-excerpt">Essential transfer pricing protective frameworks for localized enterprise operations navigating dual tax jurisdiction criteria.</p>
-                            <a href="#" class="blog-link">Read Blueprint →</a>
-                        </div>
-                    </article>
-                    <article class="blog-card">
-                        <div class="blog-content">
-                            <div class="blog-meta">June 2026 · Appellate Law</div>
-                            <h3 class="blog-title"><a href="#">Constitutional Appellate Strategy</a></h3>
-                            <p class="blog-excerpt">Critical procedural evaluation for escalating localized corporate tax appeals to higher judicial courts.</p>
-                            <a href="#" class="blog-link">Read Blueprint →</a>
-                        </div>
-                    </article>
-                    <article class="blog-card">
-                        <div class="blog-content">
-                            <div class="blog-meta">May 2026 · Compliance</div>
-                            <h3 class="blog-title"><a href="#">Indirect Tax Vulnerabilities</a></h3>
-                            <p class="blog-excerpt">Isolating common accounting processing mistakes that trigger automated statutory flags and manual audits.</p>
-                            <a href="#" class="blog-link">Read Blueprint →</a>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
         <!-- ══ CONTACT US SECTION ══ -->
         <section id="contact" class="section-padding section-gray">
             <div class="container contact-layout">
@@ -1141,7 +1308,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="phone-number">Contact Line</label>
-                            <input class="form-control" type="tel" id="phone-number" placeholder="+92 300 0000000"/>
+                            <input class="form-control" type="tel" id="phone-number" placeholder="+92 332 6006263"/>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="service-pillar">Required Discipline</label>
@@ -1166,48 +1333,52 @@
     <!-- ══ FOOTER ══ -->
     <footer>
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Taxfilernow</h3>
-                    <p class="footer-desc">Elite, rigorous regulatory architecture and strategic high-level judicial advocacy serving individuals and modern global corporations.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Practice Verticals</h4>
-                    <ul class="footer-links">
-                        <li><a href="#services" class="footer-link">Appellate Litigation</a></li>
-                        <li><a href="#services" class="footer-link">Corporate Structuring</a></li>
-                        <li><a href="#international" class="footer-link">Cross-Border Taxation</a></li>
-                        <li><a href="#services" class="footer-link">General Compliance</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Corporate Navigation</h4>
-                    <ul class="footer-links">
-                        <li><a href="#about" class="footer-link">About Us</a></li>
-                        <li><a href="#industries" class="footer-link">Industries Map</a></li>
-                        <li><a href="#blog" class="footer-link">Insights Blog</a></li>
-                        <li><a href="#contact" class="footer-link">Secure Portals</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Regulatory Desk</h4>
-                    <ul class="footer-links">
-                        <li><a href="#contact" class="footer-link">Lahore Chambers</a></li>
-                        <li><a href="#contact" class="footer-link">Islamabad Chambers</a></li>
-                        <li><a href="mailto:intake@taxfilernow.com" class="footer-link">Urgent Intake Desk</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
+            <div class="footer-bottom" style="border:none; padding:0; justify-content:center;">
                 <p class="footer-copy">&copy; 2026 Taxfilernow. All professional legal protections reserved globally.</p>
-                <div class="footer-legal-links">
-                    <a href="#" class="footer-link">Regulatory Disclosures</a>
-                    <a href="#" class="footer-link">Data Integrity Protocols</a>
-                </div>
             </div>
         </div>
     </footer>
+
+    <!-- ══ DYNAMIC INTERACTIVE CURSOR SCRIPT ══ -->
+    <script>
+        const dot = document.getElementById('custom-cursor-dot');
+        const ring = document.getElementById('custom-cursor-ring');
+
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Instantly move the anchor center dot
+            dot.style.top = `${mouseY}px`;
+            dot.style.left = `${mouseX}px`;
+        });
+
+        // Smooth fluid animation loop for outer cursor ring
+        function animateRing() {
+            let ease = 0.15; 
+            ringX += (mouseX - ringX) * ease;
+            ringY += (mouseY - ringY) * ease;
+
+            ring.style.top = `${ringY}px`;
+            ring.style.left = `${ringX}px`;
+
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        // Mouse Action Selectors for Custom Elements
+        const targets = document.querySelectorAll('a, button, input, select, textarea, .logo-box, .industry-item, .service-card, .vmv-card, .process-step');
+        targets.forEach(item => {
+            item.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            item.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        window.addEventListener('mousedown', () => document.body.classList.add('cursor-active'));
+        window.addEventListener('mouseup', () => document.body.classList.remove('cursor-active'));
+    </script>
 
 </body>
 </html>
