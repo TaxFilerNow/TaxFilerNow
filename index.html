@@ -1134,6 +1134,196 @@
                 padding: 64px 0;
             }
         }
+        /* ============================================================
+           PREMIUM POLISH LAYER — refined shine (navy + gold on white)
+           ============================================================ */
+        :root {
+            --gold: #c49a3f;
+            --gold-bright: #d9b24a;
+            --gold-grad: linear-gradient(135deg, #e3c76e 0%, #d9b24a 40%, #c49a3f 70%, #a9842f 100%);
+            --navy-grad: linear-gradient(135deg, #27406e 0%, #1b2a4a 55%, #101d38 100%);
+            --ease-lux: cubic-bezier(.19,1,.22,1);
+            --glow-navy: 0 22px 46px -16px rgba(27,42,74,.42);
+            --glow-gold: 0 14px 34px -10px rgba(196,154,63,.5);
+        }
+
+        /* ---- Primary / nav buttons: navy gradient + gold shine sweep ---- */
+        .btn-primary, a.btn-primary, .nav-cta, .btn-announcement {
+            background-color: transparent;
+            background-image: var(--navy-grad);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            box-shadow: var(--glow-navy);
+            transition: transform .4s var(--ease-lux), box-shadow .4s var(--ease-lux);
+        }
+        .btn-primary::after, .nav-cta::after, .btn-announcement::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -140%;
+            width: 65%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,.38), transparent);
+            transform: skewX(-22deg);
+            transition: left .7s var(--ease-lux);
+            z-index: 2;
+            pointer-events: none;
+        }
+        .btn-primary:hover, .nav-cta:hover, .btn-announcement:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 26px 52px -14px rgba(27,42,74,.55);
+        }
+        .btn-primary:hover::after, .nav-cta:hover::after, .btn-announcement:hover::after {
+            left: 150%;
+        }
+
+        /* ---- Outline button: gold-tinged hover lift ---- */
+        .btn-outline {
+            position: relative;
+            overflow: hidden;
+            transition: transform .35s var(--ease-lux), box-shadow .35s var(--ease-lux), border-color .35s, color .35s;
+        }
+        .btn-outline:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+            color: var(--primary-dark);
+            box-shadow: var(--glow-gold);
+        }
+
+        /* ---- Cards: lift + glow + gold top-accent reveal ---- */
+        .service-card, .vmv-card, .blog-card, .process-step, .industry-item {
+            position: relative;
+            overflow: hidden;
+            transition: transform .45s var(--ease-lux), box-shadow .45s var(--ease-lux), border-color .45s;
+        }
+        .service-card::before, .vmv-card::before, .blog-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gold-grad);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .5s var(--ease-lux);
+        }
+        .service-card:hover, .vmv-card:hover, .blog-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 28px 54px -18px rgba(27,42,74,.3);
+        }
+        .service-card:hover::before, .vmv-card:hover::before, .blog-card:hover::before {
+            transform: scaleX(1);
+        }
+        .industry-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 44px -16px rgba(0,0,0,.45);
+        }
+        .process-step:hover { transform: translateY(-5px); }
+
+        /* ---- Partner logo tiles: glassy lift ---- */
+        .logo-box {
+            transition: transform .4s var(--ease-lux), box-shadow .4s var(--ease-lux);
+        }
+        .logo-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px -14px rgba(27,42,74,.32);
+        }
+
+        /* ---- Hero heading: subtle navy depth gradient ---- */
+        .hero-tagline {
+            background: linear-gradient(180deg, #27406e 0%, #1b2a4a 58%, #101d38 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ---- Stat numbers: gold gradient shimmer ---- */
+        .stat-num {
+            background: var(--gold-grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ---- Nav links: growing gold underline ---- */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0; bottom: -5px;
+            height: 2px; width: 100%;
+            background: var(--gold-grad);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .35s var(--ease-lux);
+        }
+        .nav-link:hover::after { transform: scaleX(1); }
+
+        /* ---- Social buttons: gold glow lift ---- */
+        .social-btn {
+            transition: transform .3s var(--ease-lux), box-shadow .3s var(--ease-lux), background-color .3s;
+        }
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow-gold);
+        }
+
+        /* ---- Logo: crisp drop shadow + playful hover ---- */
+        .logo-img {
+            filter: drop-shadow(0 2px 5px rgba(27,42,74,.2));
+            transition: transform .45s var(--ease-lux);
+        }
+        .logo:hover .logo-img { transform: scale(1.06) rotate(-2deg); }
+
+        /* ---- Hero badge card: frosted glass + deeper float ---- */
+        .hero-badge-card {
+            background-color: rgba(255,255,255,.72);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 30px 64px -24px rgba(27,42,74,.32);
+            transition: transform .45s var(--ease-lux), box-shadow .45s var(--ease-lux);
+        }
+        .hero-badge-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 38px 74px -22px rgba(27,42,74,.42);
+        }
+
+        /* ---- About reference panel: gold inner-ring glow ---- */
+        .ref-panel {
+            box-shadow: 0 30px 60px -24px rgba(16,29,56,.5), inset 0 0 0 1px rgba(196,154,63,.22);
+        }
+
+        /* ---- Form fields: gold focus ring ---- */
+        .form-control:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(196,154,63,.18);
+        }
+
+        /* ---- Announcement bar: fine gold hairline ---- */
+        .announcement-bar { border-bottom: 1px solid rgba(196,154,63,.38); }
+
+        /* ---- Section titles: gold accent underline ---- */
+        .section-title { position: relative; }
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            margin-top: 14px;
+            border-radius: 3px;
+            background: var(--gold-grad);
+        }
+        .section-dark .section-title::after { opacity: .95; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn-primary::after, .nav-cta::after, .btn-announcement::after { display: none; }
+            .btn-primary, .nav-cta, .btn-announcement, .btn-outline,
+            .service-card, .vmv-card, .blog-card, .industry-item, .process-step,
+            .logo-box, .hero-badge-card, .social-btn, .logo-img, .nav-link::after {
+                transition: none;
+            }
+        }
     </style>
 </head>
 <body>
